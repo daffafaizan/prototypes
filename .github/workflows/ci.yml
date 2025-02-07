@@ -27,6 +27,11 @@ jobs:
       - name: Return to workspace
         run: cd "$GITHUB_WORKSPACE"
 
+      - name: Check contracts formatting
+        run: |
+          cd contracts
+          cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" fmt --check
+
       - name: Navigate to contracts and build
         run: |
           cd contracts
