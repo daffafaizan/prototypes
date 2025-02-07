@@ -13,7 +13,7 @@ jobs:
       group: global-self-hosted-runner
 
     env:
-      SFOUNDRY_ROOT: /home/azureuser/seismic/seismic-foundry
+      SFOUNDRY_ROOT: /home/azureuser/prototypes/seismic-foundry
 
     steps:
       - name: Check out repository
