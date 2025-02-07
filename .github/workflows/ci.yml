@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: self-hosted
+    concurrency:
+      group: global-self-hosted-runner
+
+    env:
+      SFOUNDRY_ROOT: /home/azureuser/prototypes/seismic-foundry
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build sforge
+        run: |
+          cd "$SFOUNDRY_ROOT"
+          cargo build --bin sforge
+
+      - name: Return to workspace
+        run: cd "$GITHUB_WORKSPACE"
+
+      - name: Check formatting for all projects
+        run: |
+          find . -maxdepth 2 -type f -name "foundry.toml" -execdir cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" fmt --check \;
+
+      - name: Check build for all projects
+        run: |
+          find . -maxdepth 2 -type f -name "foundry.toml" -execdir cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" build \;
+
+      - name: Run tests for all projects
+        run: |
+          find . -maxdepth 2 -type f -name "foundry.toml" -execdir cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" test \;
+
