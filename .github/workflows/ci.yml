@@ -27,17 +27,15 @@ jobs:
       - name: Return to workspace
         run: cd "$GITHUB_WORKSPACE"
 
-      - name: Check contracts formatting
+      - name: Check formatting for all projects
         run: |
-          cd contracts
-          cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" fmt --check
+          find . -maxdepth 2 -type f -name "foundry.toml" -execdir cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" fmt --check \;
 
-      - name: Navigate to contracts and build
+      - name: Check build for all projects
         run: |
-          cd contracts
-          cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" build
+          find . -maxdepth 2 -type f -name "foundry.toml" -execdir cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" build \;
 
-      - name: Run sforge tests
+      - name: Run tests for all projects
         run: |
-          cd contracts
-          cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" test
+          find . -maxdepth 2 -type f -name "foundry.toml" -execdir cargo run --bin sforge --manifest-path "$SFOUNDRY_ROOT/Cargo.toml" test \;
+
