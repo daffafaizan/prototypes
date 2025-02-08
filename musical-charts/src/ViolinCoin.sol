@@ -36,16 +36,16 @@ contract ViolinCoin is SRC20, IViolinCoin {
 
     /// @notice Returns the balance of msg.sender.
     function balanceOf() public view override(ISRC20, SRC20) returns (uint256) {
-        return SRC20.balanceOf();
+        return super.balanceOf();
     }
 
     /// @notice Transfers tokens to another address.
     function transfer(saddress to, suint256 amount) public override(ISRC20, SRC20) returns (bool) {
-        return SRC20.transfer(to, amount);
+        return super.transfer(to, amount);
     }
 
     /// @notice Transfers tokens from one address to another.
     function transferFrom(saddress from, saddress to, suint256 amount) public override(ISRC20, SRC20) returns (bool) {
-        return SRC20.transferFrom(from, to, amount);
+        return super.transferFrom(from, to, amount);
     }
 }

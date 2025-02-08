@@ -16,7 +16,7 @@ import "./ViolinCoin.sol";
 //                         ViolinAMM Contract
 //////////////////////////////////////////////////////////////*/
 
-contract ViolinAMM is ReentrancyGuard {
+contract Riff is ReentrancyGuard {
     /*//////////////////////////////////////////////////////////////
     //                        TOKEN STORAGE
     //////////////////////////////////////////////////////////////*/
@@ -28,9 +28,14 @@ contract ViolinAMM is ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
     saddress adminAddress;
 
+    // Fixed point arithmetic unit
     suint256 wad;
+
+    // Price reveal threshold
     suint256 priceReveal;
 
+    // Since the reserves are encrypted, people can't access
+    // the price information until they swap
     suint256 baseReserve;
     suint256 quoteReserve;
 
@@ -40,10 +45,6 @@ contract ViolinAMM is ReentrancyGuard {
     /*//////////////////////////////////////////////////////////////
     //                        EVENTS
     //////////////////////////////////////////////////////////////*/
-
-    // Listening event should be an encrypted event
-    /// @notice Emitted when a user puts a request to listen
-    event Listening(address indexed user);
 
     /// @notice Emitted when a swap is executed by the user
     event SwapExecuted(address indexed user);
@@ -66,7 +67,6 @@ contract ViolinAMM is ReentrancyGuard {
     function listen() external {
         hasListened[saddress(msg.sender)] = sbool(true);
         lastListenedTimestamp[saddress(msg.sender)] = suint256(block.timestamp);
-        emit Listening(msg.sender);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -111,12 +111,8 @@ contract ViolinAMM is ReentrancyGuard {
      * direction.
      */
     function swap(suint256 baseIn, suint256 quoteIn) public nonReentrant onlyViolinListener {
-        // After listening to the music, the user can call this function to swap the assets
-        // Price gets revealed here
-        require(
-            suint256(block.timestamp) >= suint256(lastListenedTimestamp[saddress(msg.sender)]) + suint256(10 seconds),
-            "Must wait 10 seconds before calling swap"
-        );
+        // After listening to the music, the swapper can call this function to swap the assets,
+        // then the price gets revealed to the swapper
 
         suint256 baseOut;
         suint256 quoteOut;
@@ -149,14 +145,7 @@ contract ViolinAMM is ReentrancyGuard {
     }
 
     /*
-     * Only returns price if it's above priceReveal threshold.
-     */
-    function getPriceGated() external view requirePriceSufficient returns (uint256 price) {
-        return uint256(_computePrice());
-    }
-
-    /*
-     * Bypasses priceReveal threshold. For testing purposes.
+     * Returns price of quote asset.
      */
     function getPrice() external onlyViolinListener returns (uint256 price) {
         hasListened[saddress(msg.sender)] = sbool(false);
@@ -179,31 +168,5 @@ contract ViolinAMM is ReentrancyGuard {
             "Overflow or division by zero"
         );
         z = (x * y) / denominator;
-    }
-
-    /*
-     * Assert price of quote asset above priceReveal threshold.
-     */
-    modifier requirePriceSufficient() {
-        require(_computePrice() >= priceReveal, "Price of quote asset is not high enough.");
-        _;
-    }
-
-    /*//////////////////////////////////////////////////////////////
-    //                        GETTERS
-    //////////////////////////////////////////////////////////////*/
-
-    /*
-     * Get the base reserve
-     */
-    function getBaseReserve() external view returns (uint256) {
-        return uint256(baseReserve);
-    }
-
-    /*
-     * Get the quote reserve
-     */
-    function getQuoteReserve() external view returns (uint256) {
-        return uint256(quoteReserve);
     }
 }
