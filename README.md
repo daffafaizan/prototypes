@@ -1,5 +1,5 @@
 # Pay It Forward
-### Pay it forward, get paid back
+<summary>Pay it forward, get paid back</summary>
 
 ### Problem
 The crypto community wants to foster communal spirit through shared generosity, but there aren't any platforms that specifically incentivize altruism while focusing on transparency and privacy.
