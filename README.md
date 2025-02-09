@@ -19,6 +19,8 @@ Below is a quick summary of each prototype currently available in this repositor
    Description here.
 2. **`Project 2 here`**  
    Description here.
+2. **`Pay It Forward`**  
+   Competitive generosity.
 
 
 ## Contributing
