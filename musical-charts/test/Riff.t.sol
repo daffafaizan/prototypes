@@ -109,18 +109,17 @@ contract ViolinAMMTest is Test {
 
         baseAsset.approve(saddress(address(amm)), suint256(30000 * WAD));
         amm.swap(suint256(30000 * WAD), suint256(0));
+
+        uint256 swapperBaseT1 = baseAsset.balanceOf();
+        uint256 swapperQuoteT1 = quoteAsset.balanceOf();
         vm.stopPrank();
 
         vm.startPrank(violinAddress);
         assertLt(priceT0, amm.getPrice());
         vm.stopPrank();
 
-        console.log("swapperBaseT0", swapperBaseT0);
-        console.log("baseAsset.balanceOf()", baseAsset.balanceOf());
-        console.log("swapperQuoteT0", swapperQuoteT0);
-        console.log("quoteAsset.balanceOf()", quoteAsset.balanceOf());
-        assertGt(swapperBaseT0, baseAsset.balanceOf());
-        assertLt(swapperQuoteT0, quoteAsset.balanceOf());
+        assertGt(swapperBaseT0, swapperBaseT1);
+        assertLt(swapperQuoteT0, swapperQuoteT1);
     }
 
     /*
