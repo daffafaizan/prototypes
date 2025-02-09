@@ -9,7 +9,7 @@ contract CompManager {
     // settings for the owner/manager and creating the chainContract and its address
     address public manager;
     ChainContract public chain;
-    address chainAddress;
+    address public chainAddress;
     // address of charity selected for competition
     address charity;
     mapping(address => bool) approvedBusinesses;

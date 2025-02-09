@@ -14,7 +14,7 @@ contract ChainContract {
 
     //modifier to determine if function call is coming from competition manager
     modifier isCompManager() {
-        require(msg.sender == manager, "The manager must call this.");
+        require(msg.sender == manager, "The competition manager must call this.");
         _;
     }
 
