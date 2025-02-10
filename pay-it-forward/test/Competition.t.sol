@@ -5,20 +5,25 @@ import {Test, console} from "forge-std/Test.sol";
 import {Competition} from "../src/Competition.sol";
 import {ChainContract} from "../src/Chain.sol";
 import {IStoreFront} from "../src/IStoreFront.sol";
+import {MockStore} from "./utils/MockStore.sol";
 
 contract TestCompetition is Test {
-    address managerAddress = address(0x1);
+    address managerAddress;
     address charityAddress = address(0x2);
-    address businessAddress = address(0x3);
     address participantAddress = address(0x4);
+    MockStore store;
+    ChainContract chain;
 
     Competition public competition;
 
     function setUp() public {
+        store = new MockStore();
         competition = new Competition();
-        competition.businessApprovalProcess(businessAddress);
+        competition.businessApprovalProcess(address(store));
         competition.selectCharity(charityAddress);
         competition.startCompetition();
+        chain = ChainContract(competition.getChainContractAddress());
+        managerAddress = competition.getManagerAddress();
     }
 
     // Test that only the manager can start the competition
@@ -37,71 +42,83 @@ contract TestCompetition is Test {
         competition.makeCompTransaction(sbool(true), unapprovedBusiness, suint(1));
     }
 
-    // // Test that a participant can make a transaction with an approved business
-    // function testMakeCompTransaction() public {
-    //     vm.prank(participantAddress);
-    //     competition.makeCompTransaction{value: 1 ether}(sbool(true), businessAddress, suint(1));
+    // Test that a participant can make a transaction with an approved business
+    function testMakeCompTransaction() public {
+        vm.prank(participantAddress);
+        // Initializes 20 ether to participant wallet address
+        vm.deal(participantAddress, 20 ether);
+        competition.makeCompTransaction{value: 10 ether}(sbool(true), address(store), suint(1));
 
-    //     // Verify that the chain has been updated
-    //     vm.prank(managerAddress);
-    //     uint256 bestChainId = competition.chain.getBestChainId(saddress(participantAddress));
-    //     assertEq(bestChainId, 0, "Best chain ID should be 0 after first transaction.");
-    // }
+        // Verify that the chain has been updated
+        vm.prank(address(competition));
+        uint256 bestChainId = chain.getBestChainId(saddress(participantAddress));
+        assertEq(bestChainId, 0, "Best chain ID should be 0 after first transaction.");
+    }
 
-    // // Test that the competition can be ended after the duration has passed
-    // function testEndCompetition() public {
-    //     // Fast-forward time to the end of the competition
-    //     vm.warp(block.timestamp + competition.duration());
+    // Test that the competition can be ended after the duration has passed
+    function testEndCompetition() public {
+        // Initializes 20 ether to participant wallet address
+        vm.deal(participantAddress, 20 ether);
 
-    //     // Make a transaction to trigger the end of the competition
-    //     vm.prank(participantAddress);
-    //     competition.makeCompTransaction{value: 1 ether}(sbool(true), businessAddress, suint(1));
+        // Fast-forward time to the end of the competition
+        vm.warp(block.timestamp + competition.duration());
 
-    //     // Verify that the competition has ended
-    //     console.log(uint256(competition.competition()));
-    //     assertEq(uint256(competition.competition()), 2, "Competition should be in POST phase.");
-    // }
+        // Make a transaction to trigger the end of the competition
+        vm.prank(participantAddress);
+        competition.makeCompTransaction{value: 10 ether}(sbool(true), address(store), suint(1));
 
-    // // Test that participants can claim payouts after the competition ends
-    // function testPayout() public {
-    //     // Make a transaction to add a link to the chain
-    //     vm.prank(participantAddress);
-    //     competition.makeCompTransaction{value: 1 ether}(sbool(true), businessAddress, suint(1));
+        // Verify that the competition has ended
+        assertEq(uint256(competition.competition()), 2, "Competition should be in POST phase.");
+    }
 
-    //     // Fast-forward time to the end of the competition
-    //     vm.warp(block.timestamp + competition.duration());
+    // Test that participants can claim payouts after the competition ends
+    function testPayout() public {
+        // Initializes 40 ether to participant wallet address
+        vm.deal(participantAddress, 40 ether);
 
-    //     // End the competition
-    //     vm.prank(participantAddress);
-    //     competition.makeCompTransaction{value: 1 ether}(sbool(true), businessAddress, suint(1));
+        // Make a transaction to add a link to the chain
+        vm.prank(participantAddress);
+        competition.makeCompTransaction{value: 10 ether}(sbool(true), address(store), suint(1));
 
-    //     // Claim payout
-    //     vm.prank(participantAddress);
-    //     competition.payout();
+        // Fast-forward time to the end of the competition
+        vm.warp(block.timestamp + competition.duration());
 
-    //     // Verify that the participant's best chain count has been reset
-    //     uint256 bestChainCount = competition.chain.getBestChainCount(saddress(participantAddress));
-    //     assertEq(bestChainCount, 0, "Best chain count should be 0 after payout.");
-    // }
+        // End the competition
+        vm.prank(participantAddress);
+        competition.makeCompTransaction{value: 10 ether}(sbool(true), address(store), suint(1));
 
-    // // Test that the competition can be reset after all payouts are claimed
-    // function testResetCompetition() public {
-    //     // Make a transaction to add a link to the chain
-    //     vm.prank(participantAddress);
-    //     competition.makeCompTransaction{value: 1 ether}(sbool(true), businessAddress, suint(1));
+        // Claim payout
+        vm.prank(participantAddress);
+        competition.payout();
 
-    //     // Fast-forward time to the end of the competition
-    //     vm.warp(block.timestamp + competition.duration());
+        // Verify that the participant's best chain count has been reset
+        vm.prank(address(competition));
+        uint256 bestChainCount = chain.getBestChainCount(saddress(participantAddress));
+        assertEq(bestChainCount, 0, "Best chain count should be 0 after payout.");
+    }
 
-    //     // End the competition
-    //     vm.prank(participantAddress);
-    //     competition.makeCompTransaction{value: 1 ether}(sbool(true), businessAddress, suint(1));
+    // Test that the competition can be reset after all payouts are claimed
+    function testResetCompetition() public {
+        // Initializes 40 ether to participant wallet address
+        vm.deal(participantAddress, 40 ether);
 
-    //     // Claim payout
-    //     vm.prank(participantAddress);
-    //     competition.payout();
+        // Make a transaction to add a link to the chain
+        vm.prank(participantAddress);
+        competition.makeCompTransaction{value: 10 ether}(sbool(true), address(store), suint(1));
 
-    //     // Verify that the competition has been reset
-    //     assertEq(uint256(competition.competition()), 0, "Competition should be reset to PRE phase.");
-    // }
+        // Fast-forward time to the end of the competition
+        vm.warp(block.timestamp + competition.duration());
+
+        // End the competition
+        vm.prank(participantAddress);
+        competition.makeCompTransaction{value: 10 ether}(sbool(true), address(store), suint(1));
+
+        // Claim payout participant
+        vm.prank(participantAddress);
+        competition.payout();
+
+        // Claim payout business
+        vm.prank(address(store));
+        competition.payout();
+    }
 }
