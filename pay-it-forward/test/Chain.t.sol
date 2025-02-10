@@ -2,11 +2,11 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {Chain} from "../src/Chain.sol";
+import {ChainContract} from "../src/Chain.sol";
 
 contract TestChain is Test {
     // create test Chain and dummy wallets to set transactions
-    Chain public chain;
+    ChainContract public chain;
     saddress participantA;
     saddress participantB;
     saddress businessA;
@@ -16,7 +16,7 @@ contract TestChain is Test {
     // set up new chain object as well as the dummy addresses we will be using
     // owner address is address(this)
     function setUp() public {
-        chain = new Chain();
+        chain = new ChainContract();
         participantA = saddress(0x111);
         participantB = saddress(0x222);
         businessA = saddress(0x100);

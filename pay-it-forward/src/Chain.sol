@@ -74,6 +74,7 @@ contract ChainContract {
             activeChain.uniqueBusinesses++;
         }
         activeChain.links[bAddr]++; // Increment business’s contribution count
+        activeChain.chainLength++; // Increment chain length
     }
 
     /**
