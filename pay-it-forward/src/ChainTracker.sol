@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 /// @title Pay-it-Forward Chain Management Contract
 /// @notice This contract manages the process of tracking chains and chain details during a pay-it-forward competition.
-contract ChainContract {
+contract ChainTracker {
     /// @notice Sets up the manager
     address manager;
 

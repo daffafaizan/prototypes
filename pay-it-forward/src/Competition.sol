@@ -1,26 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.13;
 
-import "./Chain.sol";
+import "./ChainTracker.sol";
 import "./IStoreFront.sol";
 
 /// @title Pay-it-Forward Competition Manager Contract
 /// @notice Manages the different phases of a pay-it-forward competition.
 contract Competition {
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~at deploy~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Constants and Modifiers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /// @notice Creates the manager, chain, charity, and list of approved businesses.
     address manager;
-    ChainContract public chain;
-    address chainAddress;
+    ChainTracker public chain;
     address charity;
     mapping(address => bool) approvedBusinesses;
-
-    constructor() {
-        manager = msg.sender;
-        chain = new ChainContract();
-        chainAddress = address(chain);
-    }
 
     /**
      * @notice Details the preset competition rules, made public for verification sake /// outlining/verifying the competition rules.
@@ -37,6 +30,18 @@ contract Competition {
     uint256 public competitionStartTime;
     uint256 public duration = 2592000; //this should be read as seconds, i.e. 2592000 seconds = 30 days
 
+    /**
+     * @notice Internal variables used for storing relevant competiton information.
+     * @dev Initializes the variables assisting the competition, including:
+     * Determining a single link's worth of payout at the end of a competition for participants and businesses
+     * Determining the amount being donated to a charity
+     * setting an important flag to keep track of the most recent transaction's decision to pay it forward
+     */
+    uint256 pWinnings;
+    uint256 bWinnings;
+    uint256 donation;
+    sbool lastPifChoice = sbool(false);
+
     /// @notice Enum to manage the stages of the competition.
     /// @dev The competition progresses through these phases: `PRE`, `DURING`, and `POST`.
     enum CompetitionPhases {
@@ -45,8 +50,9 @@ contract Competition {
         POST
     }
 
-    /// @notice Modifier to ensure only the manager can call certain functions.
-    modifier managerOnly() {
+    /// @notice Modifier to ensure only the organizer can call certain functions.
+    /// Organizer is the person that selects the charity, approves businesses, and starts the competition
+    modifier organizerOnly() {
         require(msg.sender == manager, "The competition manager must call this.");
         _;
     }
@@ -63,15 +69,12 @@ contract Competition {
         _;
     }
 
-    /**
-     * @notice Internal variables used for storing relevant competiton information.
-     * @dev Initializes the variables assisting the competition, including:
-     * Determining a single link's worth of payout at the end of a competition for participants and businesses
-     * setting an important flag to keep track of the most recent transaction's decision to pay it forward
-     */
-    uint256 pWinnings;
-    uint256 bWinnings;
-    sbool lastPifChoice = sbool(false);
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~constructor~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    constructor(address charityAddr) {
+        manager = msg.sender;
+        chain = new ChainTracker();
+        selectCharity(charityAddr);
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~pre competition~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     /**
@@ -79,7 +82,7 @@ contract Competition {
      * @dev Checks that the charity address is not the burn address
      * @param charityAddr The address of the charity
      */
-    function selectCharity(address charityAddr) public managerOnly atStage(CompetitionPhases.PRE) {
+    function selectCharity(address charityAddr) public organizerOnly atStage(CompetitionPhases.PRE) {
         require(charityAddr != address(0x0), "Invalid address.");
         charity = charityAddr;
     }
@@ -89,7 +92,7 @@ contract Competition {
      * @param businessAddr The address of the business being approved.
      * This prevents random addresses claiming themselves as businesses
      */
-    function businessApprovalProcess(address businessAddr) public managerOnly atStage(CompetitionPhases.PRE) {
+    function businessApprovalProcess(address businessAddr) public organizerOnly atStage(CompetitionPhases.PRE) {
         approvedBusinesses[businessAddr] = true;
     }
 
@@ -110,7 +113,7 @@ contract Competition {
      * Changes the enum phase to DURING
      * Sets the competition starting time to the current time
      */
-    function startCompetition() public managerOnly atStage(CompetitionPhases.PRE) {
+    function startCompetition() public organizerOnly atStage(CompetitionPhases.PRE) {
         require(charity != address(0x0), "Charity has not been selected.");
         competitionStartTime = block.timestamp;
         competition = CompetitionPhases.DURING;
@@ -185,7 +188,6 @@ contract Competition {
 
             //don't update last PIF because it is the same
         }
-        endCompetition(); //checks every transaction if the competition should be ended
     }
     /**
      * @notice Ends the competition if the set duration has passed.
@@ -193,7 +195,7 @@ contract Competition {
      * Changes the enum phase to POST
      */
 
-    function endCompetition() internal atStage(CompetitionPhases.DURING) {
+    function endCompetition() public organizerOnly() atStage(CompetitionPhases.DURING) {
         if (block.timestamp >= competitionStartTime + duration) {
             competition = CompetitionPhases.POST;
             setupPostCompetition();
@@ -213,8 +215,7 @@ contract Competition {
 
     /**
      * @dev Helper function to determine the amount of payout per link in the chain for participants and businesses
-     * Checks again that the charity address is not the burn address
-     * Calculates the charity donation and then donates it
+     * Calculates the charity donation
      */
     function setupPayout() internal atStage(CompetitionPhases.POST) {
         // calc prize pot amount of a single link for participant/business
@@ -222,9 +223,18 @@ contract Competition {
         bWinnings = ((address(this).balance * businessPerc) / (chain.getWinningChainLength() * 100));
 
         // calc amount of prize pot being donated to charity
-        uint256 donation = ((address(this).balance * charityPerc) / 100);
+        donation = ((address(this).balance * charityPerc) / 100);
+    }
 
+    /**
+     * @notice Claim function for the charity to recieve it's payout of the winning chain.
+     * @dev Checks that the one calling the function is the charity
+     * Checks again that the charity address is not the burn address
+     * Sends the determined amount to the charity
+     */
+    function claimDonation() external payable atStage(CompetitionPhases.POST) {
         // check if charity address if valid
+        require(msg.sender == charity, "You are not the charity.");
         require(charity != address(0x0), "Invalid address.");
         // payout charity
         (bool paid,) = charity.call{value: donation}("");
@@ -237,9 +247,7 @@ contract Competition {
      * Checks if their best chain is the winning chain, and if so fetches the count of links they had in the winning chain
      * Checks whether the wallet is a participant or a business and pays out accordingly
      * Updates the number of links they had in the winning chain to prevent repeated payouts
-     * Resets the competition if applicable
      */
-    // payout function participants/businesses will execute to claim their respective payouts
     function payout() external payable atStage(CompetitionPhases.POST) {
         chain.checkIsChainLongest(saddress(msg.sender));
         if (chain.getBestChainId(saddress(msg.sender)) == chain.getWinningChainId()) {
@@ -257,8 +265,8 @@ contract Competition {
         }
     }
 
-    function getChainContractAddress() public view returns (address) {
-        return address(chainAddress);
+    function getChainTrackerAddress() public view returns (address) {
+        return address(chain);
     }
 
     function getManagerAddress() public view returns (address) {
