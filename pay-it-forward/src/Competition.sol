@@ -11,14 +11,14 @@ contract Competition {
 
     /// @notice Creates the manager, chain, charity, and list of approved businesses.
     address manager;
-    Chain chain;
+    ChainContract public chain;
     address chainAddress;
     address charity;
     mapping(address => bool) approvedBusinesses;
 
     constructor() {
         manager = msg.sender;
-        chain = new Chain();
+        chain = new ChainContract();
         chainAddress = address(chain);
     }
 
@@ -255,16 +255,13 @@ contract Competition {
             }
             chain.walletHasBeenPaid(saddress(msg.sender));
         }
-        resetCompetition();
     }
 
-    /**
-     * @dev Checks that the wallet balance is 0 (meaning everyone is paid out)
-     * Changes the enum phase to POST
-     */
-    function resetCompetition() internal atStage(CompetitionPhases.POST) {
-        if (address(this).balance == 0) {
-            competition = CompetitionPhases.PRE;
-        }
+    function getChainContractAddress() public view returns (address) {
+        return address(chainAddress);
+    }
+
+    function getManagerAddress() public view returns (address) {
+        return address(manager);
     }
 }

@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 /// @title Pay-it-Forward Chain Management Contract
 /// @notice This contract manages the process of tracking chains and chain details during a pay-it-forward competition.
-contract Chain {
+contract ChainContract {
     /// @notice Sets up the manager
     address manager;
 
@@ -13,7 +13,7 @@ contract Chain {
 
     /// @notice Modifier to ensure only the competition contract can call certain functions
     modifier competitionOnly() {
-        require(msg.sender == manager, "Only the competition manager can call this.");
+        require(msg.sender == manager, "Only the competition smart contract can call this.");
         _;
     }
 
@@ -74,6 +74,7 @@ contract Chain {
             activeChain.uniqueBusinesses++;
         }
         activeChain.links[bAddr]++; // Increment business’s contribution count
+        activeChain.chainLength++; // Increment chain length
     }
 
     /**
