@@ -11,17 +11,16 @@ contract Competition {
 
     /// @notice Creates the manager, chain, charity, and list of approved businesses.
     address manager;
-    Chain chain;
+    ChainContract public chain;
     address chainAddress;
     address charity;
     mapping(address => bool) approvedBusinesses;
 
     constructor() {
         manager = msg.sender;
-        chain = new Chain();
+        chain = new ChainContract();
         chainAddress = address(chain);
     }
-    
 
     /**
      * @notice Details the preset competition rules, made public for verification sake /// outlining/verifying the competition rules.
@@ -95,7 +94,12 @@ contract Competition {
     }
 
     /// @notice Allows an approved business to donate to the prize pool, if they so choose.
-    function businessContribution() external payable approvedBusinessesOnly(msg.sender) atStage(CompetitionPhases.PRE) {
+    function businessContribution()
+        external
+        payable
+        approvedBusinessesOnly(msg.sender)
+        atStage(CompetitionPhases.PRE)
+    {
         require(msg.value > 0, "Contribution has been rejected.");
     }
 
@@ -125,7 +129,12 @@ contract Competition {
      * @param business The address of the business the transaction is occurring at
      * @param prodID THe ID of the product being purchased in the transaction
      */
-    function makeCompTransaction(sbool currentPifChoice, address business, suint prodID) external payable approvedBusinessesOnly(business) atStage(CompetitionPhases.DURING) {
+    function makeCompTransaction(sbool currentPifChoice, address business, suint prodID)
+        external
+        payable
+        approvedBusinessesOnly(business)
+        atStage(CompetitionPhases.DURING)
+    {
         if (lastPifChoice && currentPifChoice) {
             // case: last person pif, current person pif
             uint256 prodPrice = msg.value - (5 + (prizePotAllotment / 100)); //subtract pif amount and prize pot amount
@@ -183,6 +192,7 @@ contract Competition {
      * @dev Check if required durtation has passed since the competitions starting timestamp
      * Changes the enum phase to POST
      */
+
     function endCompetition() internal atStage(CompetitionPhases.DURING) {
         if (block.timestamp >= competitionStartTime + duration) {
             competition = CompetitionPhases.POST;
@@ -200,7 +210,7 @@ contract Competition {
         chain.nuke();
         setupPayout();
     }
-    
+
     /**
      * @dev Helper function to determine the amount of payout per link in the chain for participants and businesses
      * Checks again that the charity address is not the burn address
@@ -212,7 +222,7 @@ contract Competition {
         bWinnings = ((address(this).balance * businessPerc) / (chain.getWinningChainLength() * 100));
 
         // calc amount of prize pot being donated to charity
-        uint donation = ((address(this).balance * charityPerc) / 100);
+        uint256 donation = ((address(this).balance * charityPerc) / 100);
 
         // check if charity address if valid
         require(charity != address(0x0), "Invalid address.");

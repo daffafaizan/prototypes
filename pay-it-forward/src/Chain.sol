@@ -3,10 +3,9 @@ pragma solidity ^0.8.13;
 
 /// @title Pay-it-Forward Chain Management Contract
 /// @notice This contract manages the process of tracking chains and chain details during a pay-it-forward competition.
-contract Chain {
-
+contract ChainContract {
     /// @notice Sets up the manager
-    address manager; 
+    address manager;
 
     constructor() {
         manager = msg.sender;
@@ -94,8 +93,8 @@ contract Chain {
      * @param addr The address of the participant/business.
      */
     function checkIsChainLongest(saddress addr) public competitionOnly {
-	suint latestScore = comp.chainFinalScores[user.latestChain[addr]];
-	suint bestScore = comp.chainFinalScores[user.bestChain[addr]];
+        suint latestScore = comp.chainFinalScores[user.latestChain[addr]];
+        suint bestScore = comp.chainFinalScores[user.bestChain[addr]];
         if (latestScore > bestScore) {
             user.bestChain[addr] = user.latestChain[addr]; // Update best chain
             user.bestChainLinks[addr] = activeChain.links[addr]; // Update best chain's contribution count
@@ -108,7 +107,8 @@ contract Chain {
      */
     function nuke() public competitionOnly {
         // Record final score and length of the nuked chain
-        comp.chainFinalScores[activeChain.chainId] = calcChainScore(activeChain.uniqueParticipants, activeChain.uniqueBusinesses);
+        comp.chainFinalScores[activeChain.chainId] =
+            calcChainScore(activeChain.uniqueParticipants, activeChain.uniqueBusinesses);
         comp.chainFinalLengths[activeChain.chainId] = activeChain.chainLength;
 
         // Update the overall winning chain if this one has a higher score
