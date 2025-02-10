@@ -255,16 +255,13 @@ contract Competition {
             }
             chain.walletHasBeenPaid(saddress(msg.sender));
         }
-        resetCompetition();
     }
 
-    /**
-     * @dev Checks that the wallet balance is 0 (meaning everyone is paid out)
-     * Changes the enum phase to POST
-     */
-    function resetCompetition() internal atStage(CompetitionPhases.POST) {
-        if (address(this).balance == 0) {
-            competition = CompetitionPhases.PRE;
-        }
+    function getChainContractAddress() public view returns (address) {
+        return address(chainAddress);
+    }
+
+    function getManagerAddress() public view returns (address) {
+        return address(manager);
     }
 }

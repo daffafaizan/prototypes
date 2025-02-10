@@ -13,7 +13,7 @@ contract ChainContract {
 
     /// @notice Modifier to ensure only the competition contract can call certain functions
     modifier competitionOnly() {
-        require(msg.sender == manager, "Only the competition manager can call this.");
+        require(msg.sender == manager, "Only the competition smart contract can call this.");
         _;
     }
 
