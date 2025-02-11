@@ -9,4 +9,4 @@ By gamifying the pay-it-forward process, we can make chains more engaging and en
 
 
 ### Solution
-Create a global pay-it-forward competition on consumer payment rails. The potential to wina portion of the prize pot adds a competitive spark, increasing excitement and contributions. By building on Seismic's ecrypted network, we can keep the chain information hidden so that every participant (new or returning) will feel that they have a chance to be a winner.
+Create a global pay-it-forward competition on consumer payment rails. The potential to win a portion of the prize pot adds a competitive spark, increasing excitement and contributions. By keeping the chain encrypted, we avoid the case where people exploit the system by only contributing to the winning chain. This way every participant (new or returning) will feel that they have a fair chance to be a winner.

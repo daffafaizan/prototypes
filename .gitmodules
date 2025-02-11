@@ -1,3 +1,3 @@
-[submodule "pay-it-forward/lib/forge-std"]
-	path = pay-it-forward/lib/forge-std
-	url = https://github.com/foundry-rs/forge-std.git
+[submodule "folio/lib/forge-std"]
+	path = folio/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
