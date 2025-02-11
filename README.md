@@ -15,8 +15,8 @@ Each project in this repo lives in its own directory and includes a dedicated RE
 
 Below is a quick summary of each prototype currently available in this repository:
 
-1. **`Pay It Forward`**  
-   Competitive generosity.
+1. **`RippleLink`**  
+   Competitive generosity across global consumer transactions.
 
 
 

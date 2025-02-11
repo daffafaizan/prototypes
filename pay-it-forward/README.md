@@ -1,11 +1,12 @@
-# Pay It Forward
+# RippleLink
 ### Pay it forward, get paid back
 
 ### Problem
-The crypto community wants to foster communal spirit through shared generosity, but there aren't any platforms that specifically incentivize altruism while focusing on transparency and privacy.
+Traditional pay-it-forward chains can raise charitable funds, but they are often vulnerable to exploitation. Additionally, they tend to lack excitement, and most efforts remain local rather than global-limiting their overall impact.
 
 ### Insight
-By using shielded data types for transaction and chain details, we can keep track of necessary data without participants being able to determine the characteristics of the ongoing chain. Being able to encrypt these details is key to building a fair and viable competition.
+By gamifying the pay-it-forward process, we can make chains more engaging and encourage increased donations. People are motivated when they believe they will be a part of something big. By using a blockchain, we can expand the scope to be worldwide, amplifying reach and participation.
+
 
 ### Solution
-Our solution is a competition to create the longest and farthest reaching pay it forward chain. By building on people's competitive and generous nature we can create a competition wherein the focus is to help your fellow man and be rewarded by doing so.
+Create a global pay-it-forward competition on consumer payment rails. The potential to wina portion of the prize pot adds a competitive spark, increasing excitement and contributions. By building on Seismic's ecrypted network, we can keep the chain information hidden so that every participant (new or returning) will feel that they have a chance to be a winner.
