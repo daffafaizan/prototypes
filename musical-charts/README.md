@@ -7,4 +7,4 @@ Trading experience on every Automated Market Maker (AMM) is the same, it's time 
 What if we used other senses like hearing to make calls?
 
 ## Solution
-Make a price chart that you can listen to - users pay to listen to reveal interesting market trends.
+Encrypt a bonding curve to create an asset with a price that no one can see. Let an AI violin be the only party that can see the price. The violin generates music whenever it sees price fluctuations. Now, instead of seeing a price chart, users need to listen to it.
