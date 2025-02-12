@@ -41,7 +41,7 @@ We're excited to see what you build and look forward to collaborating on the fut
 
 ## Get in Touch
 
-- **Website:** [Seismic Blockchain](https://www.seismic.systems)
+- **Website:** [Seismic](https://www.seismic.systems)
 - **Twitter:** [@SeismicSys](https://x.com/SeismicSys)
 
 If you have any questions or want to propose a new idea, please open an issue or reach out on our official channels. Thank you for being an early part of the Seismic ecosystem!
