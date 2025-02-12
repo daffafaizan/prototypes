@@ -1,4 +1,4 @@
-# LEVEL Protocol
+# LEVEL: Stabilize your DePIN service
 
 ## Overview
 

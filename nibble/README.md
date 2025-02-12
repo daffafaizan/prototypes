@@ -1,4 +1,4 @@
-# Nibble - Restaurant Revenue Sharing
+# NIBBLE: Earn revenue share in your favorite restaurant
 
 ### Overview
 

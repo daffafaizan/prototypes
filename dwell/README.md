@@ -1,4 +1,4 @@
-# Privacy-Preserving/Yield-Bearing Tokens
+# DWELL: Pay your rent with a yield-bearing stablecoin
 
 ## Overview
 

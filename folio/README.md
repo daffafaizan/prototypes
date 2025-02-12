@@ -1,5 +1,4 @@
-# Folio
-### Pay it forward, get paid back
+# FOLIO: Participate in a global pay-it-forward chain
 
 ### Problem
 Traditional pay-it-forward chains can raise charitable funds, but they are often vulnerable to exploitation. Additionally, they tend to lack excitement, and most efforts remain local rather than global-limiting their overall impact.

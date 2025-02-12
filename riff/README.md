@@ -1,4 +1,4 @@
-# RIFF
+# RIFF: Listen to a bonding curve
 
 ## Problem
 Trading experience on every Automated Market Maker (AMM) is the same, it's time for something radically different like Riff.
