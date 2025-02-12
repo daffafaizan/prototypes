@@ -21,6 +21,8 @@ Below is a quick summary of each prototype currently available in this repositor
    Pay your rent with a yield-bearing stablecoin.
 1. **`RIFF`**  
    Listen to a bonding curve.
+1. **`Nibble`**  
+   Earn revenue share in your favorite restaurant.
 
 ## Contributing
 
