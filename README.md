@@ -1,17 +1,16 @@
 # Prototypes
 
-Welcome to the **Seismic** blockchain's **Prototypes** repository! This repo is designed to help beta users build new projects on the Seismic blockchain, while serving as a collection of example code for anyone interested in learning how to work with Seismic. Each project in this repo lives in its own directory and comes with a dedicated README providing further details.
+Welcome to **Seismic**'s repository of prototypes! This repo is designed to help beta users build new projects on Seismic, while serving as a collection of example code for anyone interested in learning how to work with the `stype`. Each project in this repo lives in its own directory and comes with a dedicated README providing further details.
 
 ## Purpose
 
 This repository exists for:
 
-- **Reference & Examples:** Developers looking to understand the Seismic blockchain or seeking best practices can explore these prototypes as real-world examples.
+- **Reference & Examples:** Developers looking to understand Seismic or seeking best practices can explore these prototypes as real-world examples.
 - **Collaboration:** We encourage contributions, feedback, and discussions about all things Seismic.
 
-Each project in this repo lives in its own directory and includes a dedicated README that provides more details.
 
-## Projects Overview
+## Descriptions
 
 Below is a quick summary of each prototype currently available in this repository:
 
@@ -21,10 +20,15 @@ Below is a quick summary of each prototype currently available in this repositor
    Pay your rent with a yield-bearing stablecoin.
 1. **`RIFF`**  
    Listen to a bonding curve.
-1. **`Folio`**  
+1. **`FOLIO`**  
    Participate in a global pay-it-forward chain.
-1. **`Nibble`**  
+1. **`NIBBLE`**  
    Earn revenue share in your favorite restaurant.
+
+If you've already [installed](https://docs.seismic.systems/onboarding/publish-your-docs) Seismic on your local machine, you can `cd` into each directory and run
+```
+sforge test
+```
 
 ## Contributing
 
@@ -34,8 +38,6 @@ Below is a quick summary of each prototype currently available in this repositor
 4. **Open** a pull request describing your changes and why they're valuable.
 
 We're excited to see what you build and look forward to collaborating on the future of Seismic!
-
----
 
 ## Get in Touch
 
