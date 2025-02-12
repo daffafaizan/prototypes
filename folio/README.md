@@ -1,4 +1,4 @@
-# RippleLink
+# Folio
 ### Pay it forward, get paid back
 
 ### Problem
