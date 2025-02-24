@@ -10,5 +10,8 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "seismic-viem": "^1.0.16"
   }
 }
