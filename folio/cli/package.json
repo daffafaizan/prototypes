@@ -2,9 +2,6 @@
   "name": "folio-cli",
   "module": "src/index.ts",
   "type": "module",
-  "scripts": {
-    "dev": "bun run src/index.ts"
-  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -12,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "seismic-viem": "^1.0.16"
   }
 }
