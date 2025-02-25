@@ -59,6 +59,7 @@ async function main() {
 
   // Simulating multiplayer interactions
   console.log("=== Competition Start ===");
+  await app.makeTransaction("Alice", "Campus Store", "10", 1)
   await app.endCompetition("Gabe");
 }
 

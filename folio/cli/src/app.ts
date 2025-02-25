@@ -3,7 +3,7 @@ import {
   type ShieldedWalletClient,
   createShieldedWalletClient,
 } from "seismic-viem";
-import { type Abi, type Address, type Chain, http } from "viem";
+import { type Abi, type Address, type Chain, http, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { getShieldedContractWithCheck } from "../lib/utils";
@@ -169,6 +169,21 @@ export class App {
     }
     return contract;
   }
+    /**
+   * Make a transaction to business.
+   * @param participantName - The name of the participant.
+   * @param businessName - The name of the business.
+   * @param amount - The amount to pay.
+   * @param id - The id of the product.
+   */
+    async makeTransaction(participantName: string, businessName: string, amount: string, id: number) {
+        console.log(`- Participant ${participantName} and Business ${businessName} writing makeTransaction()`);
+        const participantContract = this.getParticipantContract(participantName);
+        const businessAddress = this.getBusinessContract(businessName).address;
+        await participantContract.write.makeCompTransaction([true, businessAddress, id], {
+            value: parseEther(amount)
+        });
+      }
   /**
    * End the competition.
    * @param managerName - The name of the manager.
